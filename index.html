@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Flask Todo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Todo</h1>
+      <form method="post" action="{{ url_for('add') }}" class="row">
+        <input name="text" type="text" placeholder="Add a task..." required />
+        <button type="submit">Add</button>
+      </form>
+
+      <div style="display:flex;justify-content:flex-end;margin:8px 0;">
+        <button id="themeToggle" type="button" style="background:transparent;border:1px solid var(--border);color:var(--text);">
+          Toggle Theme
+        </button>
+      </div>
+
+      <nav class="filters">
+        <a href="{{ url_for('index') }}" class="{{ 'active' if current_filter=='all' else '' }}">All ({{ counts.all }})</a>
+        <a href="{{ url_for('index', filter='active') }}" class="{{ 'active' if current_filter=='active' else '' }}">Active ({{ counts.active }})</a>
+        <a href="{{ url_for('index', filter='completed') }}" class="{{ 'active' if current_filter=='completed' else '' }}">Completed ({{ counts.completed }})</a>
+        <a href="{{ url_for('index', filter='deleted') }}" class="{{ 'active' if current_filter=='deleted' else '' }}">Deleted ({{ counts.deleted }})</a>
+      </nav>
+
+      <ul>
+        {% for t in filtered %}
+        <li class="{{ 'completed' if t.completed else '' }} {{ 'deleted' if t.deleted_at else '' }}">
+          {% if not t.deleted_at %}
+          <form method="post" action="{{ url_for('toggle', todo_id=t.id) }}"><button title="toggle">{{ '↩' if t.completed else '✔' }}</button></form>
+          <span>{{ t.text }}</span>
+          <small class="muted">Added: {{ t.created_at_fmt }}</small>
+          <form method="post" action="{{ url_for('delete', todo_id=t.id) }}"><button title="delete">🗑</button></form>
+          {% else %}
+          <span>{{ t.text }}</span>
+          <small class="muted">Deleted: {{ t.deleted_at_fmt }} • Added: {{ t.created_at_fmt }}</small>
+          <form method="post" action="{{ url_for('restore', todo_id=t.id) }}"><button title="restore">⤴</button></form>
+          {% endif %}
+        </li>
+        {% else %}
+        <li class="muted">No items</li>
+        {% endfor %}
+      </ul>
+
+      {% if current_filter != 'deleted' %}
+      <form method="post" action="{{ url_for('clear_completed') }}">
+        <button type="submit">Clear Completed</button>
+      </form>
+      {% else %}
+      <form method="post" action="{{ url_for('clear_deleted') }}">
+        <button type="submit">Clear Deleted</button>
+      </form>
+      {% endif %}
+    </main>
+
+    <script>
+      (function() {
+        const key = 'todo-theme';
+        const root = document.documentElement;
+        function apply(theme){ root.setAttribute('data-theme', theme); }
+        const stored = localStorage.getItem(key);
+        apply(stored || 'dark'); // default dark
+        const btn = document.getElementById('themeToggle');
+        if (btn) {
+          btn.addEventListener('click', () => {
+            const next = (root.getAttribute('data-theme') === 'light') ? 'dark' : 'light';
+            apply(next);
+            localStorage.setItem(key, next);
+          });
+        }
+      })();
+    </script>
+  </body>
+  </html>
+
+

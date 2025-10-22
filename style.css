@@ -1,0 +1,160 @@
+/* Theme */
+/* Default: dark theme */
+:root {
+  color-scheme: dark;
+}
+
+:root[data-theme="dark"] {
+  /* Cursor-like dark palette (slate + purple accents) */
+  --bg: #0f0a0a;        /* darker base gray */
+  --bg-accent: #140d0d; /* darker accent gray */
+  --card: #111827;
+  --border: #401f1f;
+  --text: #e5e7eb;
+  --muted: #94a3b8;
+  --primary: #806b6b;   /* dark grey */
+  --primary-700: #634b4b; /* darker grey */
+  --green: #22c55e;
+  --red: #ef4444;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #474747;
+  --bg-accent: #7e7e7e;
+  --card: #0e0e0e;
+  --border: #4b4b4b;
+  --text: #2a0f0f;
+  --muted: #694747;
+  --primary: #2563eb;
+  --primary-700: #c71e1e;
+  --green: #16a34a;
+  --red: #dc2626;
+}
+
+/* Layout */
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--text);
+  
+  place-items: start center;
+  padding: 40px 16px;
+}
+
+.container {
+  width: min(860px, 96vw);
+  background: color(in srgb, var(--card) 92%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.35);
+}
+
+h1 {
+  margin: 0 0 14px 0;
+  font-size: 24px;
+}
+
+/* Add row */
+form.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+}
+
+input[type="text"] {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #0b1326;
+  color: var(--text);
+  outline: none;
+}
+input[type="text"]:focus {
+  border-color: color-mix(in srgb, var(--primary) 60%, var(--border));
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 15%, transparent);
+}
+
+button {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-700) 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+button:hover { filter: brightness(1.05); }
+button:active { transform: translateY(1px); }
+
+/* Filters */
+nav.filters {
+  margin: 14px 0 8px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+nav.filters a {
+  text-decoration: none;
+  color: var(--text);
+  border: 1px solid var(--border);
+  background: #0b1326;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 14px;
+}
+nav.filters a.active {
+  background: color-mix(in srgb, var(--primary) 25%, var(--card));
+  border-color: color-mix(in srgb, var(--primary) 60%, var(--border));
+}
+
+/* List */
+ul { list-style: none; padding: 0; margin: 8px 0 0 0; }
+li {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 96%, transparent);
+}
+li + li { margin-top: 10px; }
+li.completed span { opacity: .85; text-decoration: line-through; }
+li.deleted { opacity: .7; }
+
+.muted { opacity: .7; color: var(--muted); font-style: italic; }
+
+/* Inline edit removed */
+
+/* Action buttons override */
+li form button {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #0b1326;
+  border: 1px solid var(--border);
+}
+li form button[title="toggle"] { color: var(--green); border-color: color-mix(in srgb, var(--green) 45%, var(--border)); }
+li form button[title="delete"] { color: var(--red); border-color: color-mix(in srgb, var(--red) 45%, var(--border)); }
+li form button[title="restore"] { color: var(--primary); border-color: color-mix(in srgb, var(--primary) 45%, var(--border)); }
+
+/* Responsive */
+@media (max-width: 560px) {
+  li { grid-template-columns: 1fr auto; gap: 8px; }
+  li form[method="post"][action*="/edit/"] { grid-column: 1 / -1; }
+}
+
+/* Space the clear buttons a bit lower below the list */
+form[action$="/clear/completed"],
+form[action$="/clear/deleted"] {
+  margin-top: 24px;
+}
+
+
+
+
+
+
+
